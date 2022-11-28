@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Payment Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Ensures optimal rendering on mobile devices. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- Optimal Internet Explorer compatibility -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<style>
+    html, body, .container {
+        height: 100%;
+    }
+
+    h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    #outer {
+        width:100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    #inner {
+        justify-content: center;
+        width: 30%;
+    }
+
+    .razor-button {
+        width: 100%;
+        height: 45px;
+        background-color: #012652;
+        border: none;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        border-radius: 4px;
+        cursor:pointer;
+    }
+
+    .bank-button {
+        width: 100%;
+        height: 45px;
+        background-color: #167aca;
+        border: none;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        border-radius: 4px;
+        cursor:pointer;
+    }
+
+    .flex-container {
+        display: flex;
+        align-items: stretch;
+    }
+    .flex-container-wrap {
+        display: flex;
+        justify-content: center;
+    }
+
+    grey {
+        font-size: 0.8rem;
+        background: #d8d8d8;
+        color: #252525;
+        padding: 2px 10px 1px 10px;
+        overflow-wrap: break-word;
+    }
+
+    #circle_loading {
+        border: 6px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 6px solid #3498db;
+        width: 40px;
+        height: 40px;
+        margin: 25px;
+        -webkit-animation: spin 0.8s linear infinite; /* Safari */
+        animation: spin 0.8s linear infinite;
+    }
+    hr {
+        border: 0;
+        height: 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Safari */
+    @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Use a media query to add a breakpoint at 800px: */
+    @media screen and (max-width: 800px) {
+        #inner {
+            justify-content: center;
+            width: 90%;
+        }
+    }
+
+</style>
+
+<body>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://www.paypal.com/sdk/js?intent=capture&client-id=[@paypal_client_id]"></script>
+
+    <div id="outer" class="flex-container">
+        <div id="inner">
+            <div class="flex-container-wrap">
+                <div id="progress_loading" >
+                    <div id="circle_loading"></div>
+                    <h6 id="loading_msg" style="text-align: center;"></h6>
+                </div>
+            </div>
+            <div class="flex-container-wrap">
+                <div id="status">
+                    <h5 id="status_title"></h5>
+                    <h5 id="status_content"></h5>
+                </div>
+            </div>
+            <di id="main_content" >
+                <h5><br>Total : [@total_fees] [@currency]</h5>
+                <hr>
+                <div class="flex-container">
+                    <div>Name</div>
+                    <div style="flex-grow: 8"></div>
+                    <div>[@buyer]</div>
+                </div>
+                <div class="flex-container">
+                    <div>Code</div>
+                    <div style="flex-grow: 8"></div>
+                    <grey>[@code]</grey>
+                </div>
+                <hr>
+                <div id="paypal_section">
+                    <h6>Pay with PayPal </h6>
+                    <div id="paypal-button-container"></div>
+                    <hr>
+                </div>
+                <div id="razorpay_section">
+                    <h6>Pay with RazorPay </h6>
+                    <button id="rzp-button" class="razor-button"><b>Razor Pay</b></button>
+                    <br>
+                    <hr>
+                </div>
+                <div id="bank_section">
+                    <h6>Pay with Bank Transfer </h6>
+                    <button id="bank-button" class="bank-button"><b>See Instruction</b></button>
+                </div>
+            </di>
+        </div>
+    </div>
+
+    <!--paypal script-->
+    <script>
+        var paypal_active = '[@paypal_active]';
+        if(paypal_active){
+            var url = window.location.href.split("paymentPage");
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    showLoading(true, 'Generate Order ID');
+                    // create order id
+                    return fetch(url[0] + 'getPaymentOrderId?type=PAYPAL&id=[@id]').then(function(res) {
+                        showLoading(false);
+                        return res.json();
+                    }).then(function(data) {
+                        if(data.status == 'success'){
+                            return data.data.order_id;
+                        } else {
+                            showAlertDialog('Failed', data.msg);
+                        }
+                        return null;
+                    }).catch(function(error) {
+                        showAlertDialog('Failed', 'Failed when Obtain Order ID : ' + error);
+                        return null;
+                    });
+                },
+                onError: function (err) {
+                    showLoading(false);
+                    //showAlertDialog('Failed', err);
+                },
+                onApprove: function(data, actions) {
+                    showLoading(true, 'Updating Order Status');
+                    return actions.order.capture().then(function(details) {
+                        var data = { };
+                        updateProductOrderPayment('[@id]');
+                    });
+                },
+                onCancel: function (data)  {
+                    showLoading(false);
+                }
+            }).render('#paypal-button-container');
+        } else {
+            document.getElementById("paypal_section").style.display = "none";
+        }
+    </script>
+
+    <!--RazorPay script-->
+    <script>
+        var razorpay_active = '[@razorpay_active]';
+        if(razorpay_active){
+            var url = window.location.href.split("paymentPage");
+
+            var options = {
+                "key": "[@razorpay_key_id]",
+                "name": "OneKart",
+                "handler": function (response){
+                    showLoading(true, 'Updating Order Status');
+                    var data = { };
+                    updateProductOrderPayment('[@id]');
+                }
+            };
+            var rzp1;
+            function initRazorPay() {
+                rzp1 = new Razorpay(options);
+                rzp1.on('payment.failed', function (response){
+                    showAlertDialog('Failed', response.error.description);
+                });
+            }
+
+            document.getElementById('rzp-button').onclick = function(e){
+                showLoading(true, 'Generate Order ID');
+
+                // create order id
+                fetch(url[0] + 'getPaymentOrderId?type=RAZORPAY&id=[@id]').then(function(res) {
+                    showLoading(false);
+                    return res.json();
+                }).then(function(data) {
+                    if(data.status == 'success'){
+                        options.order_id = data.data.order_id;
+                        initRazorPay();
+                        rzp1.open();
+                        e.preventDefault();
+                    } else {
+                        showAlertDialog('Failed', data.msg);
+                    }
+                }).catch(function(error) {
+                    showAlertDialog('Failed', 'Failed when Obtain Order ID : ' + error);
+                });
+            }
+        } else {
+            document.getElementById("razorpay_section").style.display = "none";
+        }
+    </script>
+
+    <!--BankTransfer script-->
+    <script>
+        var bank_active = '[@bank_active]';
+        var url = window.location.href.split("paymentPage");
+        if(bank_active){
+            $("#bank-button").click(function(e){
+                // create order id
+                fetch(url[0] + 'getPaymentOrderId?type=BANK&id=[@id]').then(function(res) {
+                    showLoading(false);
+                    return res.json();
+                }).then(function(data) {
+                    if(data.status == 'success'){
+                        showBankInstruction();
+                        e.preventDefault();
+                    } else {
+                        showAlertDialog('Failed', data.msg);
+                    }
+                }).catch(function(error) {
+                    showAlertDialog('Failed', 'Failed when update order : ' + error);
+                });
+            });
+
+            function showBankInstruction() {
+                bootbox.dialog({
+                    title: 'Bank Payment',
+                    centerVertical: true,
+                    message: "[@bank_instruction]",
+                    size: 'large',
+                    buttons: {
+                        ok: {
+                            label: "I UNDERSTAND",
+                            className: 'btn-info',
+                            callback: function(){}
+                        }
+                    }
+                });
+            }
+        } else {
+            document.getElementById("bank_section").style.display = "none";
+        }
+    </script>
+
+    <script>
+        showLoading(false);
+        //showLoading(true, 'Load page');
+        //$(window).on('load', function(){ showLoading(false); });
+        //$(document).ready(function(){ showLoading(true, 'Load page'); });
+
+        function showLoading(show, msg) {
+            msg = msg ? msg : '';
+            var progress_loading = document.getElementById("progress_loading");
+            var main_content = document.getElementById("main_content");
+            document.getElementById("loading_msg").innerHTML = msg;
+            if(show == true){
+                progress_loading.style.display = "block";
+                main_content.style.display = "none";
+            } else {
+                progress_loading.style.display = "none";
+                main_content.style.display = "block";
+            }
+        }
+
+        function showStatus(title, content) {
+            hideAll();
+            document.getElementById("status").style.display = "block";
+            document.getElementById("progress_loading").style.display = "none";
+            document.getElementById("status_title").innerHTML = title;
+            document.getElementById("status_content").innerHTML = content;
+        }
+
+        function hideAll() {
+            document.getElementById("progress_loading").style.display = "none";
+            document.getElementById("main_content").style.display = "none";
+            document.getElementById("status").style.display = "none";
+        }
+
+        function updateProductOrderPayment(id) {
+            var url = window.location.href.split("paymentPage");
+            var body = { id: id };
+
+            // create order id
+            fetch(url[0] + "updateProductOrderPayment", {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json;charset=utf-8'},
+                body: JSON.stringify(body)
+            }).then(function(res) {
+                return res.json();
+            }).then(function(data) {
+                if(data.status == "success"){
+                    showStatus('PAYMENT SUCCESS', 'Payment Successfully');
+                    showAlertDialogCallback('PAYMENT SUCCESS', 'Payment Successfully', function () {
+                        location.reload();
+                    });
+                } else {
+                    showStatus('PAYMENT SUCCESS', 'Payment Successfully');
+                    showAlertDialogCallback('PAYMENT SUCCESS', 'Payment Successfully', function () {
+                        location.reload();
+                    //showStatus('PAYMENT SUCCESS', data.msg);
+                    //showAlertDialogCallback('PAYMENT SUCCESS', data.msg, function () {
+                    //    location.reload();
+                    });
+                }
+            }).catch(function(error) {
+                showStatus('PAYMENT SUCCESS', 'Payment Successfully');
+                    showAlertDialogCallback('PAYMENT SUCCESS', 'Payment Successfully', function () {
+                        location.reload();
+                //showStatus('PAYMENT SUCCESS', error);
+               // showAlertDialogCallback('PAYMENT SUCCESS', error, function () {
+                //    location.reload();
+                });
+            });
+        }
+
+        function showAlertDialog(title, msg) {
+            bootbox.alert({title : title, message: msg, centerVertical: true});
+        }
+
+        function showAlertDialogCallback(title, msg, callback) {
+            bootbox.alert({
+                title : title, 
+                message: msg, 
+                centerVertical: true,
+                callback: callback
+            });
+        }
+
+    </script>
+
+</body>

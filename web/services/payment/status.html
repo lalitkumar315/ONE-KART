@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Payment Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Ensures optimal rendering on mobile devices. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- Optimal Internet Explorer compatibility -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<style>
+    html, body, .container {
+        height: 100%;
+    }
+
+    h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+
+    #outer {
+        width:100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    #inner {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .flex-container {
+        display: flex;
+        margin-top: 10px;
+        align-items: stretch;
+    }
+
+
+
+    .flex-container-main {
+        display: flex;
+        margin-top: 50px;
+        align-items: stretch;
+        width: 30%;
+    }
+
+    .flex-container-wrap {
+        display: flex;
+        justify-content: center;
+    }
+
+    #progress_loading {
+        border: 6px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 6px solid #3498db;
+        width: 40px;
+        height: 40px;
+        margin: 25px;
+        -webkit-animation: spin 0.8s linear infinite; /* Safari */
+        animation: spin 0.8s linear infinite;
+    }
+    hr {
+        border: 0;
+        height: 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Safari */
+    @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Use a media query to add a breakpoint at 800px: */
+    @media screen and (max-width: 800px) {
+
+        .flex-container-main {
+            display: flex;
+            margin-top: 50px;
+            align-items: stretch;
+            width: 90%;
+        }
+    }
+
+</style>
+
+<body>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+    <div id="outer">
+
+        <div id="non_loading" class="flex-container-main">
+            <div id="error" class="flex-container-wrap">
+                <h4>[@msg]</h4>
+            </div>
+
+            <div id="inner" class="flex-container">
+                <div id="main_content" style="width: 100%;">
+                    <br>
+                    <div class="flex-container">
+                        <div>
+                            <h6>Payment status</h6>
+                            <h3 style="text-align: start; color: #79a557">PAID</h3>
+                        </div>
+                        <div style="flex-grow: 8"></div>
+                        <div>
+                            <b><h3>[@total_fees] INR</h3></b>
+                            <b><h6 style="text-align: end;">[@payment]</h6></b>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="flex-container">
+                        <div>Name</div>
+                        <div style="flex-grow: 8"></div>
+                        <div>[@buyer]</div>
+                    </div>
+                    <div class="flex-container">
+                        <div>Code</div>
+                        <div style="flex-grow: 8"></div>
+                        <grey>[@code]</grey>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var page_type = '[@page_type]';
+        if(page_type != 'PAID'){
+            showMainContent(true);
+        } else {
+            showMainContent(false);
+        }
+
+        function showMainContent(show) {
+            var error = document.getElementById("error");
+            var inner = document.getElementById("inner");
+            if(show == false){
+                error.style.display = "none";
+                inner.style.display = "flex";
+            } else {
+                error.style.display = "flex";
+                inner.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
