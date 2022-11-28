@@ -1,0 +1,21 @@
+<md-dialog layout="column" aria-label="dialog refund">
+  <md-dialog-content class="autoScroll" ng-if="!loading">
+    <h3>Refund Order Confirmation</h3>
+    <p>Before do this action, make sure you've received refund money from
+      <br>Buyer  : <b> {{order.buyer}}</b>
+      <br>Amount  : <b> {{order.total_fees}} {{conf_currency}}</b></p>
+    <md-checkbox ng-model="returned_stock" class="md-primary">Stock is returned</md-checkbox>
+    <p class="hint">If 'Stock is returned' checked, stock from buyer will be added to the product</p>
+
+  </md-dialog-content>
+
+  <md-dialog-content class="autoScroll" ng-if="loading">
+    <md-progress-circular class="md-primary" md-mode="indeterminate"></md-progress-circular>
+  </md-dialog-content>
+
+  <div layout="row" layout-align="center center" class="md-actions" ng-if="!loading">
+    <md-button ng-click="processRefund()" md-no-ink class="md-primary">PROCESS REFUND</md-button>
+    <md-button ng-click="cancel()">CANCEL</md-button>
+  </div>
+  <br>
+</md-dialog>

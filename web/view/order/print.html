@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Markeet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link href="../../lib/css/angular-material.min.css" rel="stylesheet prefetch" type="text/css"/>
+    <link href="../../lib/css/fonts/material.css" rel="stylesheet" type="text/css"/>
+    <link href="../../lib/css/style.css" rel="stylesheet" type="text/css"/>
+
+    <link href='../../lib/css/fonts/font-awesome.min.css' rel='stylesheet prefetch'/>
+
+
+    <script src="../../lib/js/angular.min.js"></script>
+    <script src="../../lib/js/angular-route.min.js"></script>
+    <script src="../../lib/js/angular-animate.min.js"></script>
+    <script src="../../lib/js/angular-aria.min.js"></script>
+    <script src="../../lib/js/angular-material.min.js"></script>
+    <script src="../../lib/js/angular-messages.min.js"></script>
+    <script src="../../lib/js/angular-cookies.min.js"></script>
+    <script src="../../lib/js/angular-sanitize.min.js"></script>
+
+    <!-- angular global controllers -->
+    <script>
+        angular.module('App', ['ngMaterial', 'ngRoute', 'ngMessages', 'ngCookies', 'ngSanitize']);
+        angular.module('App').config(['$locationProvider', function ($locationProvider) {
+            $locationProvider.html5Mode({
+                enabled: true,
+                requireBase: false
+            });
+        }]);
+    </script>
+    <!-- angular current controllers -->
+    <script src="../../controller/order/print.js"></script>
+</head>
+
+<body layout="row" ng-app="App" ng-controller="PrintOrderController" layout-fill>
+
+<div layout="column" class="relative" style="background-color:#FFF; width: 100%">
+    <md-content id="main-content" style="width: 100%" >
+        <div layout width="700" style="width: 700px; padding: 20px;">
+            <div layout="column">
+                <div layout="row">
+                    <item flex="25">
+                        <img src="../../lib/img/logo_print.png" alt="Logo Print">
+                    </item>
+                    <span flex></span>
+                    <item>
+                        <md-button class="md-icon-button" ng-click="printAction()">
+                            <md-icon aria-label="Print">print</md-icon>
+                        </md-button>
+                    </item>
+                </div>
+
+                <div layout="row" style="margin-top: 20px;">
+                    <item flex="50"><b>Details Order</b></item>
+                    <item flex></item>
+                    <item>Code : <span style="color: #89C541;">{{order.code}}</span></item>
+                </div>
+
+                <md-divider class="margin-divider"></md-divider>
+
+                <div layout="row">
+                    <item flex="25">Buyer Name</item>
+                    <item flex="5"> :</item>
+                    <item>{{order.buyer}}</item>
+                </div>
+                <div layout="row">
+                    <item flex="25">Email</item>
+                    <item flex="5"> :</item>
+                    <item>{{order.email}}</item>
+                </div>
+                <div layout="row">
+                    <item flex="25">Phone</item>
+                    <item flex="5"> :</item>
+                    <item>{{order.phone}}</item>
+                </div>
+                <div layout="row">
+                    <item flex="25">Address</item>
+                    <item flex="5"> :</item>
+                    <item>{{order.address}}</item>
+                </div>
+
+                <md-divider class="margin-divider"></md-divider>
+                <div layout="row">
+                    <item flex="25">Shipping</item>
+                    <item flex="5"> :</item>
+                    <item>{{order.shipping}} ({{order.shipping_rate}} {{conf_currency}})</item>
+                </div>
+
+                <div layout="row">
+                    <item flex="25">Shipping Location</item>
+                    <item flex="5"> : </item>
+                    <item>{{order.shipping_location}}</item>
+                </div>
+
+                <div layout="row">
+                    <item flex="25">Date Shipping</item>
+                    <item flex="5"> :</item>
+                    <item>{{order.date_ship | date:'dd MMMM yyyy'}}</item>
+                </div>
+
+                <md-divider class="margin-divider"></md-divider>
+                <div layout="row">
+                    <item flex="25">Payment Status</item> <item flex="5"> : </item>
+                    <item>
+                        <grey ng-if="order.payment_status == ''">UNKNOWN</grey>
+                        <grey ng-if="order.payment_status != ''">{{order.payment_status}}</grey>
+                    </item>
+                </div>
+                <div layout="row">
+                    <item flex="25">Payment</item> <item flex="5"> : </item>
+                    <item>
+                        <grey ng-if="order.payment == ''">UNKNOWN</grey>
+                        <grey ng-if="order.payment != ''">{{order.payment}}</grey>
+                    </item>
+                </div>
+                <div layout="row">
+                    <item flex="25">Status</item>
+                    <item flex="5"> :</item>
+                    <item>
+                        <waiting ng-if="order.status=='WAITING'">{{order.status}}</waiting>
+                        <processed ng-if="order.status=='PROCESSED'">{{order.status}}</processed>
+                        <cancel ng-if="order.status=='CANCEL'">{{order.status}}</cancel>
+                    </item>
+                </div>
+                <div layout="row">
+                    <item flex="25">Total Fees</item>
+                    <item flex="5"> :</item>
+                    <item>{{order.total_fees}} {{conf_currency}}</item>
+                </div>
+
+                <md-divider class="margin-divider"></md-divider>
+                <div layout="row">
+                    <item flex="25">Created At</item>
+                    <item flex="5"> :</item>
+                    <item>{{order.created_at | date:'hh.mm, dd MMMM yyyy'}}</item>
+                </div>
+                <div layout="row">
+                    <item flex="25">Last Update</item>
+                    <item flex="5"> :</item>
+                    <item>{{order.last_update | date:'hh.mm, dd MMMM yyyy'}}</item>
+                </div>
+
+                <md-divider class="margin-divider"></md-divider>
+                <div layout="row">
+                    <item flex="25">Comment</item>
+                    <item flex="5"> :</item>
+                    <item>{{order.comment}}</item>
+                </div>
+                <md-divider class="margin-divider"></md-divider>
+                <div layout="row" ng-if="order.serial !== ''">
+                    <item flex="25">Serial</item>
+                    <item flex="5"> :</item>
+                    <item>{{order.serial}}</item>
+                </div>
+
+                <md-divider class="margin-divider" ng-if="order.serial !== ''"></md-divider>
+
+                <br>
+                <b>List Product Order : </b><br>
+
+                <md-divider></md-divider>
+                <div layout="row">
+                    <item flex="5"><b>No.</b></item>
+                    <item flex="50" style="width: 500px;"><b>Product</b></item>
+                    <item flex="5"></item>
+                    <item flex="15"><b>Price Item</b></item>
+                    <item flex="5"><b>Amount</b></item>
+                    <item flex="20" layout="row" layout-align="end center"><b>Price Total</b></item>
+                </div>
+                <md-divider></md-divider>
+
+                <div layout="row" ng-repeat="pod in order_details">
+                    <item flex="5">{{$index+1}}</item>
+                    <item flex="50"style="width: 500px;">{{pod.product_name}}</item>
+                    <item flex="5"></item>
+                    <item flex="15">{{pod.price_item}}</item>
+                    <item flex="5">{{pod.amount}}</item>
+                    <item flex="20" layout="row" layout-align="end center">{{getPriceTotal(pod)}} {{conf_currency}}
+                    </item>
+                </div>
+
+                <md-divider></md-divider>
+                <div layout="row">
+                    <item flex="80">Sub Total</item>
+                    <item flex="20" layout="row"
+                          layout-align="end center">{{sub_total_formatted}} {{conf_currency}}
+                    </item>
+                </div>
+                <div layout="row">
+                    <item flex="80">Tax * ({{order.tax}} %)</item>
+                    <item flex="20" layout="row" layout-align="end center">{{price_tax_formatted}} {{conf_currency}}
+                    </item>
+                </div>
+                <div layout="row">
+                    <item flex="80">Shipping</item>
+                    <item flex="20" layout="row" layout-align="end center">{{shipping_rate_formatted}} {{conf_currency}}
+                    </item>
+                </div>
+                <md-divider></md-divider>
+                <div layout="row" style="color: #89C541;">
+                    <item flex="80"><b>Total</b></item>
+                    <item flex="20" layout="row" layout-align="end center">
+                        <b>{{total}} {{conf_currency}}</b>
+                    </item>
+                </div>
+                <md-divider></md-divider>
+                <p class="hint">
+                    <i> * This tax may different with your current tax, this tax calculate when buyer submit order</i>
+                </p>
+                <br><br>
+            </div>
+        </div>
+    </md-content>
+</div>
+
+</body>
+</html>

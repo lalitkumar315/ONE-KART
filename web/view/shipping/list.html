@@ -1,0 +1,76 @@
+<!-- add button -->
+
+<div layout-sm="column" layout-md="row" layout-lg="row" layout-gt-lg="row">
+	<md-button ng-if="!loading_all" ng-disabled="!isChanged()" class="md-raised md-accent" ng-click="submitAll()">UPDATE</md-button>
+	<md-progress-circular ng-if="loading_all" class="md-accent" md-mode="indeterminate" md-diameter="40px"></md-progress-circular>
+</div>
+
+
+<md-card class="md-whiteframe-1dp">
+	<div class="table-responsive-vertical">
+		<table id="table" class="table table-hover">
+			<thead>
+				<tr >
+					<th width="2%">No</th>
+					<th width="20%">Location</th>
+					<th width="5%">Economy</th>
+					<th width="5%">Regular</th>
+					<th width="5%">Express</th>
+					<th width="5%">Active</th>
+					<th width="5%" style="text-align:center;">Action</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr ng-repeat="a in shipping track by a.id">
+					<td data-title="No">{{($index+1) + (paging.current * paging.limit) - paging.limit}}</td>
+					<td data-title="Location">{{a.location}}</td>
+					<td data-title="Economy">
+						<div layout="row">
+							<md-checkbox ng-disabled="a.active == 0" ng-model="a.active_eco" ng-true-value="1" ng-false-value="0" class="checkbox-small md-primary" aria-label="a.name"></md-checkbox>
+							<span>{{a.rate_economy}}</span>
+						</div>
+					</td>
+					<td data-title="Regular">
+						<div layout="row">
+							<md-checkbox ng-disabled="a.active == 0" ng-model="a.active_reg" ng-true-value="1" ng-false-value="0" class="checkbox-small md-primary" aria-label="a.name"></md-checkbox>
+							<span>{{a.rate_regular}}</span>
+						</div>
+					</td>
+					<td data-title="Express">
+						<div layout="row">
+							<md-checkbox ng-disabled="a.active == 0" ng-model="a.active_exp" ng-true-value="1" ng-false-value="0" class="checkbox-small md-primary" aria-label="a.name"></md-checkbox>
+							<span>{{a.rate_express}}</span>
+						</div>
+					</td>
+					<td data-title="Active">
+						<md-checkbox ng-model="a.active" ng-true-value="1" ng-false-value="0" class="checkbox-small md-primary" aria-label="a.name"></md-checkbox>
+					</td>
+					<td data-title="Action">
+						<div layout="row" layout-align="center">
+							<md-button layout-align="center" class="md-btn-small" ng-click="deleteShipping($event, a)">
+								<md-icon class="md-ic-small" ng-style="{'font-size': '15px'}">delete</md-icon>
+								<md-tooltip>Delete Item</md-tooltip>
+							</md-button>
+							<md-button layout-align="center" class="md-btn-small" ng-click="addShipping($event, a)">
+								<md-icon class="md-ic-small" ng-style="{'font-size': '15px'}">create</md-icon>
+								<md-tooltip>Edit Item</md-tooltip>
+							</md-button>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div ng-if="loading" style="text-align:center;" colspan="10">
+			<p>Loading</p>
+			<md-progress-linear md-mode="indeterminate"/>
+		</div>
+	</div>
+
+	<!--pagination view-->
+	<section layout="row" class="sub-menu-bg" flex>
+		<cl-paging flex cl-pages="paging.total" , cl-steps="paging.step" , cl-page-changed="paging.onPageChanged()" , cl-align="center center" , cl-current-page="paging.current"/>
+	</section>
+
+</md-card>
+<br>

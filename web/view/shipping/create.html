@@ -1,0 +1,73 @@
+<md-dialog layout="column" flex="50" aria-label="dialog category">
+  <form role="form" name="thisForm">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2 flex>{{title}}</h2>
+        <md-button class="md-icon-button" ng-click="cancel()"> <md-icon aria-label="Close dialog">clear</md-icon> </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content class="autoScroll" style="max-width:800px;max-height:810px;">
+
+      <md-checkbox class="md-primary" ng-model="shipping.active" ng-true-value="1" ng-false-value="0">Active</md-checkbox>
+
+      <div layout="row" layout-align="start center">
+		<md-input-container flex="90">
+          <label>Location Name *</label>
+          <input required type="text" ng-model="shipping.location" maxlength="50">
+        </md-input-container>
+      </div>
+
+      <div layout="row" layout-align="start center">
+        <md-input-container flex="55">
+          <label>Location ID (optional)</label>
+          <input type="text" ng-model="shipping.location_id" maxlength="50">
+        </md-input-container>
+      </div>
+
+      <div layout="row" layout-align="start center">
+        <md-checkbox class="md-primary" ng-model="shipping.active_eco" ng-true-value="1" ng-false-value="0"></md-checkbox>
+        <md-input-container flex="40">
+          <label>Rate economy</label>
+          <input type="number" required ng-model="shipping.rate_economy" maxlength="13">
+        </md-input-container>
+        <span flex="5"></span>
+        <span flex="10">{{currency}}</span>
+      </div>
+
+      <div layout="row" layout-align="start center">
+        <md-checkbox class="md-primary" ng-model="shipping.active_reg" ng-true-value="1" ng-false-value="0"></md-checkbox>
+        <md-input-container flex="40">
+          <label>Rate regular</label>
+          <input type="number" required ng-model="shipping.rate_regular" maxlength="13">
+        </md-input-container>
+        <span flex="5"></span>
+        <span flex="10">{{currency}}</span>
+      </div>
+
+      <div layout="row" layout-align="start center">
+        <md-checkbox class="md-primary" ng-model="shipping.active_exp" ng-true-value="1" ng-false-value="0"></md-checkbox>
+        <md-input-container flex="40">
+          <label>Rate express</label>
+          <input type="number" required ng-model="shipping.rate_express" maxlength="13">
+        </md-input-container>
+        <span flex="5"></span>
+        <span flex="10">{{currency}}</span>
+      </div>
+
+      <p class="hint">Rate = 0 means free shipping</p>
+
+    </md-dialog-content>
+
+    <div class="md-actions md-padding" layout="row">
+      <span flex></span>
+      <md-button ng-if="!submit_loading"  class="md-warn" ng-click="hide()" >
+       CANCEL
+      </md-button>
+      <md-button ng-if="!submit_loading" ng-disabled="isClean() || thisForm.$invalid" ng-click="submit(shipping)" style="margin-right:20px;" class="md-raised md-primary">
+        {{buttonText}}
+      </md-button>
+      <md-progress-circular ng-if="submit_loading" class="md-accent" md-mode="indeterminate" md-diameter="30px"></md-progress-circular>
+    </div>
+  </form>
+</md-dialog>

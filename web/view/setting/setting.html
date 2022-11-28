@@ -1,0 +1,337 @@
+<md-card class="md-whiteframe-1dp" >
+	<md-tabs md-dynamic-height md-border-bottom md-selected="tab_index">
+
+		<md-tab label="General" md-on-select="onTabSelected(0)">
+			<div class="md-padding" ng-controller="SettingGeneralController">
+				<form role="form" name="thisGeneralForm" class="md-padding">
+					<p class="hint"><b>TAX</b> : Value Added Tax (VAT) or Goods and Services Tax (GST). This tax will be added in every purchase transaction.
+						<br><b>Feature News</b> : Maximum News Info display on home android app. Recommended value is 5</p>
+
+					<br>
+					<div layout="row">
+						<md-input-container flex="30">
+							<label>Currency</label>
+							<md-select ng-model="selected_currency">
+								<md-option ng-repeat="cur in arr_currency" ng-value="cur">
+									{{cur.code}} - {{cur.name}}
+								</md-option>
+							</md-select>
+						</md-input-container>
+					</div>
+					<p class="hint">Supported Payment :
+						<grey>BANK</grey>
+						<grey ng-if="selected_currency.paypal == 1">PAYPAL</grey>
+						<grey ng-if="selected_currency.razorpay == 1">RAZORPAY</grey>
+					</p>
+					<br>
+
+					<div layout="row" layout-align="start center">
+						<md-input-container flex="10">
+							<label>TAX</label>
+							<input type="number" required name="tax" ng-model="conf_general.GENERAL.tax" maxlength="4">
+						</md-input-container>
+						<legend flex="5"><b>%</b></legend>
+						<md-input-container flex="15">
+							<label>Featured News</label>
+							<input type="number" required name="featured_news" ng-model="conf_general.GENERAL.featured_news" maxlength="1">
+						</md-input-container>
+					</div>
+					<div layout="row" flex="100">
+						<md-button ng-if="!loading_conf_general" ng-disabled="thisGeneralForm.$invalid || !isReadySubmit()" ng-click="submit()" class="md-raised md-accent">SAVE</md-button>
+						<md-progress-circular ng-if="loading_conf_general" class="md-accent" md-mode="indeterminate" md-diameter="30px"></md-progress-circular>
+					</div>
+				</form>
+			</div>
+		</md-tab>
+
+		<md-tab label="Notification" md-on-select="onTabSelected(1)">
+			<div class="md-padding" ng-controller="SettingNotifController">
+				<form role="form" name="thisNotifForm" class="md-padding">
+					<div layout="row" layout-align="start center">
+						<md-input-container flex="80">
+							<label>Firebase Key (FCM)</label>
+							<input type="text" required ng-model="conf_notif.NOTIF_KEY.fcm_key" maxlength="100">
+						</md-input-container>
+					</div>
+					<div layout="row" layout-align="start center" ng-if="false">
+						<md-input-container flex="50">
+							<label>One Signal App ID</label>
+							<input type="text" required ng-model="conf_notif.NOTIF_KEY.one_signal_appid" >
+						</md-input-container>
+					</div>
+					<div layout="row" layout-align="start center" ng-if="false">
+						<md-input-container flex="50">
+							<label>One Signal Rest Key</label>
+							<input type="text" required ng-model="conf_notif.NOTIF_KEY.one_signal_rest_key" >
+						</md-input-container>
+					</div>
+					<div layout="row" flex="100">
+						<md-button ng-if="!loading_conf_notif" ng-disabled="thisNotifForm.$invalid || !isReadySubmit()" ng-click="submit()" class="md-raised md-accent">SAVE</md-button>
+						<md-progress-circular ng-if="loading_conf_notif" class="md-accent" md-mode="indeterminate" md-diameter="30px"></md-progress-circular>
+					</div>
+
+				</form>
+			</div>
+		</md-tab>
+
+		<md-tab label="Payment" md-on-select="onTabSelected(2)">
+			<div class="md-padding" ng-controller="SettingPaymentController">
+				<form role="form" name="thisPaymentForm" class="padding-left-right">
+					<md-tabs md-dynamic-height md-border-bottom>
+						<md-tab label="bank">
+							<md-content>
+								<br>
+								<div layout="column" layout-align="start start">
+									<md-checkbox ng-model="conf_payment.PAYMENT_BANK.active" class="md-primary">Enable Bank Transfer</md-checkbox>
+								</div>
+								<br>
+								<p class="hint">Write <b>[@amount]</b> inside instruction to show total order amount
+									<br>Write <b>[@code]</b> inside instruction to show order code</p>
+								<legend>Instruction</legend>
+								<div text-angular="text-angular" required name="instruction" ng-model="conf_payment.PAYMENT_BANK.instruction"></div>
+							</md-content>
+							<br>
+						</md-tab>
+						<md-tab label="paypal">
+							<md-content>
+								<br>
+								<div layout="column" layout-align="start start">
+									<md-checkbox ng-model="conf_payment.PAYMENT_PAYPAL.active" class="md-primary">Enable Paypal</md-checkbox>
+								</div>
+								<div layout="row">
+									<md-input-container flex="20">
+										<label>Payment Mode</label>
+										<md-select ng-model="conf_payment.PAYMENT_PAYPAL.mode" ng-disabled="!conf_payment.PAYMENT_PAYPAL.active">
+											<md-option ng-repeat="mode in paypal_mode" value="{{mode}}">
+												{{mode}}
+											</md-option>
+										</md-select>
+									</md-input-container>
+								</div>
+								<div layout="row" layout-align="start center">
+									<md-input-container flex="50">
+										<label>Client ID</label>
+										<input type="text" required ng-model="conf_payment.PAYMENT_PAYPAL.client_id" ng-disabled="!conf_payment.PAYMENT_PAYPAL.active" >
+									</md-input-container>
+								</div>
+								<div layout="row" layout-align="start center">
+									<md-input-container flex="50">
+										<label>Secret</label>
+										<input type="password" required ng-model="conf_payment.PAYMENT_PAYPAL.secret" ng-disabled="!conf_payment.PAYMENT_PAYPAL.active">
+									</md-input-container>
+								</div>
+							</md-content>
+						</md-tab>
+						<md-tab label="razorpay">
+							<md-content>
+								<br>
+								<div layout="column" layout-align="start start">
+									<md-checkbox ng-model="conf_payment.PAYMENT_RAZORPAY.active" class="md-primary">Enable Razorpay</md-checkbox>
+								</div>
+								<div layout="row" layout-align="start center">
+									<md-input-container flex="50">
+										<label>Key ID</label>
+										<input type="text" required ng-model="conf_payment.PAYMENT_RAZORPAY.key_id" ng-disabled="!conf_payment.PAYMENT_RAZORPAY.active">
+									</md-input-container>
+								</div>
+								<div layout="row" layout-align="start center">
+									<md-input-container flex="50">
+										<label>Key Secret</label>
+										<input type="password" required ng-model="conf_payment.PAYMENT_RAZORPAY.key_secret"ng-disabled="!conf_payment.PAYMENT_RAZORPAY.active">
+									</md-input-container>
+								</div>
+							</md-content>
+						</md-tab>
+					</md-tabs>
+					<div layout="row" flex="100">
+						<md-button ng-if="!loading_conf_payment" ng-disabled="thisPaymentForm.$invalid || !isReadySubmit()" ng-click="submit()" class="md-raised md-accent">SAVE</md-button>
+						<md-progress-circular ng-if="loading_conf_payment" class="md-accent" md-mode="indeterminate" md-diameter="30px"></md-progress-circular>
+					</div>
+
+				</form>
+			</div>
+		</md-tab>
+
+		<md-tab label="Email" md-on-select="onTabSelected(3)">
+			<div class="md-padding" ng-controller="SettingEmailController">
+				<form role="form" name="thisEmailForm" class="padding-left-right">
+					<md-tabs md-dynamic-height md-border-bottom>
+						<md-tab label="smtp">
+							<md-content>
+								<br>
+								<div layout="row" layout-align="start center">
+									<md-input-container flex="40">
+										<label>SMTP Email</label>
+										<input type="text" required ng-model="conf_email.EMAIL_SMTP.email" maxlength="50">
+									</md-input-container>
+								</div>
+								<div layout="row" layout-align="start center">
+									<md-input-container flex="40">
+										<label>SMTP Password</label>
+										<input type="password" required ng-model="conf_email.EMAIL_SMTP.password" maxlength="50">
+									</md-input-container>
+								</div>
+								<div layout="row" layout-align="start center">
+									<md-input-container flex="25">
+										<label>SMTP Host</label>
+										<input type="text" required ng-model="conf_email.EMAIL_SMTP.host" maxlength="50">
+									</md-input-container>
+									<legend flex="5"></legend>
+									<md-input-container flex="10">
+										<label>SMTP Port</label>
+										<input type="text" required ng-model="conf_email.EMAIL_SMTP.port" maxlength="50">
+									</md-input-container>
+								</div>
+							</md-content>
+						</md-tab>
+						<md-tab label="order">
+							<md-content>
+								<br>
+								<p class="hint">
+									<b>Email on New Order</b> : Report Order Product, email will be send to <i>buyer</i> and <i>BCC Email Receiver members.</i>.
+									<br><b>Email on Order Processed</b> : Notify that Order status change to PROCESSED, email will be send to <i>buyer</i> only.
+									<br><b>Email Reply to</b> : When buyer reply your email, it will be received by this email, to fill type email and press enter.</p>
+								<br>
+
+								<div layout="column" layout-align="start start">
+									<md-checkbox ng-model="conf_email.EMAIL_ORDER.notif_order" class="md-primary">Email on New Order</md-checkbox>
+									<md-checkbox ng-model="conf_email.EMAIL_ORDER.notif_order_process" class="md-primary">Email on Order Processed</md-checkbox>
+								</div>
+								<br><br>
+								<div layout="row" layout-align="start center">
+									<md-input-container flex="30">
+										<label>Email Reply to</label>
+										<input type="text" required ng-model="conf_email.EMAIL_ORDER.reply_to" maxlength="50">
+									</md-input-container>
+								</div>
+
+								<div layout="row" layout-align="start start">
+									<md-input-container flex="50">
+										<label>BCC Email(s) Receiver</label>
+										<md-chips ng-model="conf_email.EMAIL_ORDER.bcc_receiver" required readonly="!conf_email.EMAIL_ORDER.notif_order"></md-chips>
+									</md-input-container>
+									<md-button md-no-ink class="md-primary" ng-click="resetEmailReceiver()" style="margin-top:20px;">RESET</md-button>
+								</div>
+							</md-content>
+						</md-tab>
+						<md-tab label="text">
+							<md-content >
+								<br>
+								<md-content>
+									<div layout="row" layout-align="start center">
+										<md-input-container flex="30">
+											<label>Subject email new order</label>
+											<input type="text" required ng-model="conf_email.EMAIL_TEXT.subject_email_new_order" maxlength="100">
+										</md-input-container>
+										<legend flex="5"></legend>
+										<md-input-container flex="30">
+											<label>Title report new order</label>
+											<input type="text" required ng-model="conf_email.EMAIL_TEXT.title_report_new_order" maxlength="100">
+										</md-input-container>
+									</div>
+
+									<div layout="row" layout-align="start center">
+										<md-input-container flex="30">
+											<label>Subject email order processed</label>
+											<input type="text" required ng-model="conf_email.EMAIL_TEXT.subject_email_order_processed" maxlength="100">
+										</md-input-container>
+										<legend flex="5"></legend>
+										<md-input-container flex="30">
+											<label>Title report order processed</label>
+											<input type="text" required ng-model="conf_email.EMAIL_TEXT.title_report_order_processed" maxlength="100">
+										</md-input-container>
+									</div>
+
+									<div layout="row" layout-align="start center">
+										<md-input-container flex="30">
+											<label>Subject email order updated</label>
+											<input type="text" required ng-model="conf_email.EMAIL_TEXT.subject_email_order_updated" maxlength="100">
+										</md-input-container>
+										<legend flex="5"></legend>
+										<md-input-container flex="30">
+											<label>Title report order updated</label>
+											<input type="text" required ng-model="conf_email.EMAIL_TEXT.title_report_order_updated" maxlength="100">
+										</md-input-container>
+									</div>
+
+								</md-content>
+							</md-content>
+						</md-tab>
+					</md-tabs>
+					<div layout="row" flex="100">
+						<md-button ng-if="!loading_conf_email" ng-disabled="thisEmailForm.$invalid || !isReadySubmit()" ng-click="submit()" class="md-raised md-accent">SAVE</md-button>
+						<md-progress-circular ng-if="loading_conf_email" class="md-accent" md-mode="indeterminate" md-diameter="30px"></md-progress-circular>
+					</div>
+
+				</form>
+			</div>
+		</md-tab>
+	</md-tabs>
+</md-card>
+<br>
+
+<md-card class="md-whiteframe-1dp md-padding" ng-controller="SettingUserController">
+	<md-card-content>
+		<h2 class="md-title">User Panel Setting</h2>
+		<form role="form" name="thisFormUser">
+			<div layout="row">
+				<md-input-container flex="30">
+					<label>Name</label>
+					<input name="name" minlength="1" maxlength="50" ng-model="userdata.name" required />
+					<div ng-messages="thisForm.name.$error">
+						<div ng-message='required'>required.</div>
+						<div ng-message='minlength'>min length 1</div>
+					</div>
+				</md-input-container>
+				<div flex="5"></div>
+				<md-input-container flex="30">
+					<label>Email</label>
+					<input type="email" minlength="5" maxlength="50" name="email" ng-model="userdata.email" required />
+					<div ng-messages="thisForm.email.$error">
+						<div ng-message='required'>required.</div>
+						<div ng-message='minlength'>min length 10.</div>
+					</div>
+				</md-input-container>
+			</div>
+
+
+			<div layout="row">
+				<md-input-container flex="30">
+					<label>Username</label>
+					<input name="username" minlength="1" maxlength="20" ng-model="userdata.username" required />
+					<div ng-messages="thisForm.username.$error">
+						<div ng-message='required'>required.</div>
+						<div ng-message='minlength'>min length 5.</div>
+					</div>
+				</md-input-container>
+			</div>
+			<div layout="row">
+				<md-input-container flex="30">
+					<label>Password</label>
+					<input type="password" name="password" ng-model="userdata.password" required />
+					<div ng-messages="thisForm.password.$error">
+						<div ng-message='required'>required.</div>
+					</div>
+				</md-input-container>
+				<div flex="5"></div>
+				<md-input-container flex="30">
+					<label>Re-Type Password</label>
+					<input type="password" name="re_password" ng-model="re_password" />
+					<div ng-if="!isPasswordMatch() || !re_passwordValid" class="red-alert">Password not match</div>
+				</md-input-container>
+			</div>
+			<div layout="row" flex="100">
+				<md-button ng-if="!submit_loading" ng-disabled="!isPasswordMatch() || thisFormUser.$invalid || demo_version || isClean()" ng-click="submit(true)" class="md-raised md-accent">
+					Add New
+				</md-button>
+				<md-button ng-if="!submit_loading" ng-disabled="!isPasswordMatch() || thisFormUser.$invalid || demo_version || isClean()" ng-click="submit(false)" class="md-raised md-accent">
+					Update
+				</md-button>
+				<md-progress-circular ng-if="submit_loading" class="md-accent" md-mode="indeterminate" md-diameter="30px"></md-progress-circular>
+			</div>
+
+		</form>
+	</md-card-content>
+</md-card>
+<br>
+
